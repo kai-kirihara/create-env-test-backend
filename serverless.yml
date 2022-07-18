@@ -1,7 +1,7 @@
 org: kirihara
 app: create-env-test-backend
 service: create-env-test-backend
-frameworkVersion: '3'
+# frameworkVersion: '3'
 
 provider:
   name: aws
