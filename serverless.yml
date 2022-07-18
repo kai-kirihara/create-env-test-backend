@@ -1,0 +1,30 @@
+org: kirihara
+app: create-env-test-backend
+service: create-env-test-backend
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: ${self:custom.otherfile.environment.${self:provider.stage}.region}
+  stage: ${opt:stage, self:custom.defalutStage}                 #--stageオブションが定義されていない場合は、custom.defalutStageを参照
+  profile: ${self:custom.profiles.${self:provider.stage}}       #--stageオブションで設定された名前に変更される。
+  environment:
+    COMMON_VARIABLES: common                                    #ここでは共通部の定義をしておく。
+
+custom:
+  defalutStage: dev
+  profiles:
+    dev: sls
+    prd: sls
+  otherfile:
+    environment:
+      dev: ${file(./conf/dev/dev.yml)}
+      prd: ${file(./conf/prd/prd.yml)}
+functions:
+  api:
+    handler: handler.handler
+    events:
+      - httpApi: '*'
+    environment:
+      Other_File: ${self:custom.otherfile.environment.${self:provider.stage}.Other_File}
